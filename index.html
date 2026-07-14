@@ -31,7 +31,7 @@
   .reveal{opacity:0;transform:translateY(26px);animation:rise 1s var(--ease) forwards}
   @keyframes rise{to{opacity:1;transform:none}}
   .d1{animation-delay:.05s}.d2{animation-delay:.18s}.d3{animation-delay:.3s}
-  .d4{animation-delay:.42s}.d5{animation-delay:.54s}.d6{animation-delay:.66s}.d7{animation-delay:.78s}
+  .d4{animation-delay:.42s}.d5{animation-delay:.54s}.d6{animation-delay:.66s}.d7{animation-delay:.78s}.d8{animation-delay:.9s}
 
   .wrap{max-width:680px;margin:0 auto;padding:64px 24px 96px}
 
@@ -236,6 +236,25 @@
       </div>
     </div>
 
+    <!-- 05 · Rekening -->
+    <div class="section reveal d8">
+      <div class="sec-title"><span class="sec-num">05</span><span class="sec-label">Informasi Rekening</span><span class="sec-line"></span></div>
+      <div class="grid2">
+        <div class="field">
+          <label for="bank">Bank</label>
+          <input type="text" id="bank" placeholder="Contoh: BCA / Mandiri / BNI" required>
+        </div>
+        <div class="field">
+          <label for="atasNama">Atas Nama</label>
+          <input type="text" id="atasNama" placeholder="Nama pemilik rekening" required>
+        </div>
+      </div>
+      <div class="field" style="margin-top:28px">
+        <label for="noRek">Nomor Rekening</label>
+        <input type="text" id="noRek" inputmode="numeric" placeholder="Contoh: 1234567890" required>
+      </div>
+    </div>
+
     <button type="submit" class="btn-submit" id="btnSubmit"><span>Kirim Pengajuan</span></button>
     <div class="err" id="err"></div>
   </form>
@@ -326,7 +345,10 @@
       startDate: start,
       endDate: end,
       items: list,
-      sourceOfFund: document.getElementById('sof').value.trim()
+      sourceOfFund: document.getElementById('sof').value.trim(),
+      bank: document.getElementById('bank').value.trim(),
+      atasNama: document.getElementById('atasNama').value.trim(),
+      noRek: document.getElementById('noRek').value.trim()
     };
 
     var btn = document.getElementById('btnSubmit');
