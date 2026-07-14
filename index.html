@@ -124,6 +124,18 @@
   }
   .btn-add:hover .plus{background:var(--ink);color:#fff;transform:rotate(90deg)}
 
+  /* ---------- bank dropdown ---------- */
+  .dd{
+    position:absolute;left:0;right:0;top:100%;z-index:30;display:none;
+    background:#fff;border:1px solid var(--line);
+    max-height:236px;overflow-y:auto;
+    box-shadow:0 18px 40px -18px rgba(17,17,20,.22);
+  }
+  .dd.open{display:block}
+  .dd-item{padding:11px 14px;font-size:14px;cursor:pointer;transition:background .15s}
+  .dd-item:hover,.dd-item.active{background:#faf8f4;color:var(--gold)}
+  .dd-empty{padding:11px 14px;font-size:12px;color:var(--muted);font-style:italic}
+
   /* ---------- total ---------- */
   .total{
     margin-top:34px;padding:22px 26px;
@@ -242,7 +254,8 @@
       <div class="grid2">
         <div class="field">
           <label for="bank">Bank</label>
-          <input type="text" id="bank" placeholder="Contoh: BCA / Mandiri / BNI" required>
+          <input type="text" id="bank" placeholder="Ketik / pilih bank" autocomplete="off" required>
+          <div class="dd" id="bankDD"></div>
         </div>
         <div class="field">
           <label for="atasNama">Atas Nama</label>
@@ -385,6 +398,53 @@
     updateTotal();
     window.scrollTo({top:0, behavior:'smooth'});
   }
+
+  // ----- dropdown bank (combobox) -----
+  var BANKS = ["Allo Bank", "ANZ Indonesia", "Bank Aceh Syariah", "Bank Aladin Syariah", "Bank Amar Indonesia", "Bank Artha Graha Internasional", "Bank Banten", "Bank Bengkulu", "Bank BJB", "Bank BJB Syariah", "Bank BPD Bali", "Bank BPD DIY", "Bank Bumi Arta", "Bank Capital Indonesia", "Bank Danamon", "Bank DKI", "Bank Ganesha", "Bank INA Perdana", "Bank Index Selindo", "Bank Jago", "Bank Jambi", "Bank Jateng", "Bank Jatim", "Bank Kalbar", "Bank Kalsel", "Bank Kalteng", "Bank Kaltimtara", "Bank Lampung", "Bank Maluku Malut", "Bank Mandiri", "Bank Mandiri Taspen", "Bank MAS (Multiarta Sentosa)", "Bank Maspion", "Bank Mayapada", "Bank Mayora", "Bank Mega", "Bank Mega Syariah", "Bank Mestika Dharma", "Bank MNC Internasional", "Bank Muamalat", "Bank Nagari", "Bank Neo Commerce", "Bank NTB Syariah", "Bank NTT", "Bank of China (Jakarta)", "Bank Oke Indonesia", "Bank Papua", "Bank Prima Master", "Bank Raya", "Bank Resona Perdania", "Bank Riau Kepri Syariah", "Bank Sahabat Sampoerna", "Bank Saqu (Jasa Jakarta)", "Bank SBI Indonesia", "Bank Shinhan Indonesia", "Bank Sinarmas", "Bank Sulselbar", "Bank Sulteng", "Bank Sultra", "Bank SulutGo", "Bank Sumsel Babel", "Bank Sumut", "Bank Victoria", "Bank Victoria Syariah", "Bank Woori Saudara", "BCA", "BCA Digital (blu)", "BCA Syariah", "BNI", "BRI", "BSI (Bank Syariah Indonesia)", "BTN", "BTPN Syariah", "CCB Indonesia", "CIMB Niaga", "Citibank Indonesia", "CTBC Indonesia", "DBS Indonesia", "Hana Bank", "HSBC Indonesia", "IBK Indonesia", "ICBC Indonesia", "J Trust Bank", "KB Bank (Bukopin)", "KB Bukopin Syariah", "Krom Bank", "LINE Bank", "Maybank Indonesia", "Nobu Bank", "OCBC Indonesia", "Panin Bank", "Panin Dubai Syariah", "PermataBank", "SeaBank", "SMBC Indonesia (BTPN)", "Standard Chartered Indonesia", "Superbank", "UOB Indonesia"];
+  var bankInput = document.getElementById('bank');
+  var bankDD = document.getElementById('bankDD');
+  var bankIdx = -1;
+
+  function openBankDD(list){
+    if (!list.length) {
+      bankDD.innerHTML = '<div class="dd-empty">Bank tidak ditemukan \u2014 nama yang Anda ketik akan dipakai.</div>';
+    } else {
+      bankDD.innerHTML = list.map(function(b){ return '<div class="dd-item">' + b + '</div>'; }).join('');
+    }
+    bankDD.classList.add('open');
+    bankIdx = -1;
+  }
+  function closeBankDD(){ bankDD.classList.remove('open'); bankIdx = -1; }
+  function filterBanks(){
+    var q = bankInput.value.trim().toLowerCase();
+    return q ? BANKS.filter(function(b){ return b.toLowerCase().indexOf(q) !== -1; }) : BANKS;
+  }
+  bankInput.addEventListener('input', function(){ openBankDD(filterBanks()); });
+  bankInput.addEventListener('focus', function(){ openBankDD(filterBanks()); });
+  bankInput.addEventListener('keydown', function(e){
+    var items = bankDD.querySelectorAll('.dd-item');
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!bankDD.classList.contains('open')) { openBankDD(filterBanks()); return; }
+      if (!items.length) return;
+      bankIdx = e.key === 'ArrowDown' ? (bankIdx + 1) % items.length : (bankIdx - 1 + items.length) % items.length;
+      items.forEach(function(it, i){ it.classList.toggle('active', i === bankIdx); });
+      items[bankIdx].scrollIntoView({block:'nearest'});
+    } else if (e.key === 'Enter') {
+      if (bankDD.classList.contains('open')) {
+        e.preventDefault();
+        if (bankIdx >= 0 && items[bankIdx]) bankInput.value = items[bankIdx].textContent;
+        closeBankDD();
+      }
+    } else if (e.key === 'Escape') { closeBankDD(); }
+  });
+  bankDD.addEventListener('mousedown', function(e){
+    var t = e.target.closest('.dd-item');
+    if (t) { e.preventDefault(); bankInput.value = t.textContent; closeBankDD(); }
+  });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('#bank') && !e.target.closest('#bankDD')) closeBankDD();
+  });
 
   // init
   addItem();
