@@ -205,9 +205,15 @@
     <!-- 01 · Perusahaan -->
     <div class="section reveal d4">
       <div class="sec-title"><span class="sec-num">01</span><span class="sec-label">Perusahaan</span><span class="sec-line"></span></div>
-      <div class="field">
-        <label for="namaPT">Nama PT</label>
-        <input type="text" id="namaPT" placeholder="PT Contoh Sejahtera Abadi" required>
+      <div class="grid2">
+        <div class="field">
+          <label for="namaPT">Nama PT</label>
+          <input type="text" id="namaPT" placeholder="PT Contoh Sejahtera Abadi" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="nama@perusahaan.com" required>
+        </div>
       </div>
     </div>
 
@@ -278,7 +284,7 @@
   <div>
     <div class="ok-ring"><svg viewBox="0 0 24 24"><polyline points="4 12.5 10 18.5 20 6.5"/></svg></div>
     <h2>Pengajuan Terkirim</h2>
-    <p>Data Anda telah tercatat langsung di spreadsheet.</p>
+    <p>Data Anda telah tercatat dan email konfirmasi telah dikirim ke alamat yang Anda isi.</p>
     <button type="button" onclick="resetAll()">Buat Pengajuan Baru</button>
   </div>
 </div>
@@ -333,7 +339,7 @@
     el.textContent = msg; el.style.display = 'block';
   }
 
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7GrBKHIVqmZGCfnGU9Upy9cHcKYgrkZbeeF65TAZjdVKu-PJ1eBMpgxG2erodLVagtQ/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXT3_PawQ0m5uu-vFcbfoYXUZCF2qMeRnXvkdX9uAzgxJOmNlojvmAMstlI6MTqGPU/exec';
 
   document.getElementById('form').addEventListener('submit', function(ev){
     ev.preventDefault();
@@ -358,6 +364,7 @@
       startDate: start,
       endDate: end,
       items: list,
+      email: document.getElementById('email').value.trim(),
       sourceOfFund: document.getElementById('sof').value.trim(),
       bank: document.getElementById('bank').value.trim(),
       atasNama: document.getElementById('atasNama').value.trim(),
